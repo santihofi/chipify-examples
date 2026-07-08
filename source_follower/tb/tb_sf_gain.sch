@@ -70,4 +70,4 @@ value="
 C {vsource.sym} 240 -210 0 0 {name=V5 value=0.35 savecurrent=true}
 C {gnd.sym} 240 -180 0 0 {name=l6 lab=GND}
 C {vsource.sym} -180 -200 0 0 {name=VIN value=ac 1 savecurrent=true}
-C {chipify-examples/source_follower/sch/source_follower.sym} 150 -120 0 0 {name=x1}
+C {source_follower.sym} 150 -120 0 0 {name=x1}

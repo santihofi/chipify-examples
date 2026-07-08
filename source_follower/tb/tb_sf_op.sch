@@ -67,4 +67,4 @@ C {vsource.sym} 630 -190 0 0 {name=V5 value=0.35 savecurrent=true}
 C {gnd.sym} 630 -160 0 0 {name=l6 lab=GND}
 C {vsource.sym} 40 -70 2 0 {name=V4 value=0 savecurrent=true}
 C {lab_pin.sym} 530 -190 3 1 {name=p1 sig_type=std_logic lab=vdd}
-C {chipify-examples/source_follower/sch/source_follower.sym} 540 -90 0 0 {name=x1}
+C {source_follower.sym} 540 -90 0 0 {name=x1}
