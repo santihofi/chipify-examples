@@ -21,7 +21,9 @@ Institute for Integrated Circuits and Quantum Computing, Johannes Kepler Univers
 
 This repository contains the official examples for chipify. The intention is to show the functionality chipify provides. To run this examples, please install chipify: 
 
-""python3 -m pip install chipify"".
+```bash
+python3 -m pip install chipify
+```
 
 ## License
 
