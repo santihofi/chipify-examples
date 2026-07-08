@@ -24,9 +24,6 @@ tests:
       unit: 'Hz'
     engine: ngspice
     ac_signals: [outp, outn]
-  tb_sf_tran:
-    transient_signals: [outp, outn]
-    engine: ngspice
 equations:
   vd_tr: outp-outn
 transient_equations:

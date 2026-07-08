@@ -29,7 +29,6 @@ C {lab_pin.sym} 650 70 3 1 {name=p6 sig_type=std_logic lab=vdd}
 C {vsource.sym} 630 -190 0 0 {name=V5 value="dc=0.35" savecurrent=true}
 C {gnd.sym} 630 -160 0 0 {name=l6 lab=GND}
 C {lab_pin.sym} 530 -190 3 1 {name=p1 sig_type=std_logic lab=vdd}
-C {chipify/examples/source_follower/sch/source_follower.sym} 540 -90 0 0 {name=x1}
 C {simulator_commands_shown.sym} 760 -60 0 0 {name=Commands
 simulator=vacask
 only_toplevel=false 
@@ -55,3 +54,4 @@ include \\"/foss/pdks/ihp-sg13g2/libs.tech/vacask/models/cornerCAP.lib\\" sectio
       }
 C {lab_pin.sym} 640 -110 0 1 {name=p2 sig_type=std_logic lab=outp}
 C {lab_pin.sym} 640 -70 0 1 {name=p3 sig_type=std_logic lab=outn}
+C {chipify-examples/source_follower/sch/source_follower.sym} 540 -90 0 0 {name=x1}
