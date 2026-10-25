@@ -1,0 +1,4 @@
+name: Voltage divider
+description: Six operating points with ideal resistors; no PDK required.
+default_datasheet: divider.yaml
+default_num_cores: 2

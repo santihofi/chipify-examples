@@ -1,0 +1,3 @@
+* Copyright (c) 2026 Santiago Hofwimmer
+* An illustrative generic diode, not a foundry-qualified device model.
+.model demo_diode D(Is=1e-14 N=1)

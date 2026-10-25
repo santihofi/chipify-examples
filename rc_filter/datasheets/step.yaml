@@ -1,0 +1,34 @@
+# Copyright (c) 2026 Santiago Hofwimmer
+description: A 1 V step through a 1 kohm RC filter with three capacitor values.
+parameters:
+  resistance: [1000]
+  # Farads: 100 nF, about 316 nF, and 1 uF.
+  capacitance: logspace(-7, -6, 3)
+tests:
+  step:
+    source: netlist
+    engine: ngspice
+    step_final_voltage:
+      min: 0.999
+      max: 1.001
+      unit: V
+    step_time_63:
+      min: 0.00009
+      max: 0.00101
+      unit: s
+    transient_signals: [v(in), v(out)]
+
+# Evaluated per waveform, including when the CLI renders a transient plot.
+transient_equations:
+  resistor_drop: v(in) - v(out)
+
+reports:
+  formats: [png, svg]
+  pdf: true
+  markdown: true
+  plots:
+    - type: transient
+      name: step_by_capacitance
+      signals: [v(out), resistor_drop]
+      group: capacitance
+      runs: all_valid

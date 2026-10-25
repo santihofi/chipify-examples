@@ -1,0 +1,41 @@
+# Copyright (c) 2026 Santiago Hofwimmer
+description: Sixty-four seeded resistor samples; some valid runs intentionally fail specs.
+parameters:
+  seed: range(1, 65)
+  nominal_resistance: [10000]
+  # Standard deviation, not a hard tolerance limit or a three-sigma bound.
+  sigma_fraction: [0.01]
+tests:
+  tolerance:
+    source: netlist
+    engine: ngspice
+    mc_gain:
+      min: 0.495
+      max: 0.505
+      typ: 0.5
+    mc_offset:
+      min: -0.005
+      max: 0.005
+      typ: 0
+      unit: V
+reports:
+  formats: [png, svg]
+  pdf: true
+  markdown: true
+  plots_per_page: 2
+  plots:
+    - type: histogram
+      name: gain_distribution
+      param: mc_gain
+      fit: Gauss (Normal)
+      bins: 12
+      zoom: true
+      formats: [png, svg, latex]
+    - type: histogram
+      name: offset_distribution
+      param: mc_offset
+      fit: Gauss (Normal)
+      bins: 12
+      zoom: true
+    - type: fail_breakdown
+      name: failing_specs

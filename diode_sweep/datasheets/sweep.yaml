@@ -1,0 +1,32 @@
+# Copyright (c) 2026 Santiago Hofwimmer
+description: A diode clamp swept from 0 to 1 V at six parameter combinations.
+parameters:
+  temperature: [-20, 27, 80]
+  series_resistance: [500, 1000]
+tests:
+  clamp:
+    source: netlist
+    engine: ngspice
+    diode_forward_voltage:
+      min: 0.4
+      max: 0.9
+      unit: V
+    diode_forward_current:
+      min: 0.00005
+      max: 0.0015
+      unit: A
+    dc_signals: [v(out)]
+reports:
+  formats: [png, svg]
+  pdf: true
+  markdown: true
+  plots_per_page: 2
+  plots:
+    - type: dc
+      name: diode_transfer_by_temperature
+      signals: [v(out)]
+      group: temperature
+      runs: all_valid
+    - type: tornado
+      name: forward_voltage_sensitivity
+      target: diode_forward_voltage

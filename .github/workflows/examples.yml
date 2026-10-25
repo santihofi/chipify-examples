@@ -1,0 +1,25 @@
+name: Verify introductory examples
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  examples:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install ngspice
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends ngspice
+      - name: Install the documented Chipify revision
+        run: python -m pip install "git+https://github.com/santihofi/chipify.git@1960c8132a68676c9aa496f267d135d6f5af2d74"
+      - name: Verify circuits, reports and repeatability
+        run: python scripts/verify_examples.py

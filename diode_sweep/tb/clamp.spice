@@ -1,0 +1,16 @@
+* Copyright (c) 2026 Santiago Hofwimmer
+* This include is relative to this testbench file, not the launch directory.
+.include "../models/diode.lib"
+.temp {{ temperature }}
+Vdrive in 0 0
+Rseries in out {{ series_resistance }}
+Dclamp out 0 demo_diode
+
+.control
+dc Vdrive 0 1 0.01
+let forward_current_trace = -i(Vdrive)
+meas dc diode_forward_voltage find v(out) at=1
+meas dc diode_forward_current find forward_current_trace at=1
+quit
+.endc
+.end

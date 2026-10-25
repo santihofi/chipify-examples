@@ -1,0 +1,49 @@
+# Copyright (c) 2026 Santiago Hofwimmer
+description: An ideal voltage divider over supply voltage and bottom resistance.
+
+# Every combination is simulated: 3 voltages x 1 top x 2 bottom = 6 cases.
+# Resistance values are in ohms; YAML numbers are used directly in Jinja.
+parameters:
+  vin: [1.8, 3.3, 5.0]
+  r_top: [10000]
+  r_bottom: [10000, 20000]
+
+tests:
+  divider:                  # tb/divider.spice
+    source: netlist         # No schematic entry or PDK is needed.
+    engine: ngspice
+    # Each key names a let/meas vector in the testbench.
+    divider_vout:
+      min: 0.8
+      max: 3.4
+      unit: V
+    divider_gain:
+      min: 0.49
+      max: 0.68
+    divider_current:
+      min: 0.00005
+      max: 0.00026
+      unit: A
+
+# Scalar equations appear in the GUI after data is loaded. The reports below
+# use measured vectors so they also work on the current headless CLI path.
+equations:
+  divider_power_mw: vin * divider_current * 1000
+
+# Output is opt-in: use --reports, or Generate Reports in the GUI.
+reports:
+  formats: [png, svg]
+  pdf: true
+  markdown: true
+  plots_per_page: 2
+  plots:
+    - type: scatter
+      name: output_vs_supply
+      x: vin
+      y: divider_vout
+    - type: corner_yield
+      name: yield_by_supply_and_resistance
+      x: vin
+      y: r_bottom
+    - type: correlation
+      name: divider_correlations

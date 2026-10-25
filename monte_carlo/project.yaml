@@ -1,0 +1,4 @@
+name: Resistor tolerance Monte Carlo
+description: Independent 1 percent Gaussian resistor variation in a divider.
+default_datasheet: tolerance.yaml
+default_num_cores: 2

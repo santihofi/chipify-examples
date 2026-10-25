@@ -1,0 +1,13 @@
+* Copyright (c) 2026 Santiago Hofwimmer
+* A 1 V step starts at 1 us; its high interval exceeds the simulated time.
+Vinput in 0 PULSE(0 1 1u 1n 1n 20m 40m)
+Rseries in out {{ resistance }}
+Cload out 0 {{ capacitance }}
+
+.control
+tran 1u 8m
+meas tran step_final_voltage find v(out) at=8m
+meas tran step_time_63 when v(out)=0.6321205588 rise=1
+quit
+.endc
+.end

@@ -1,0 +1,19 @@
+* Copyright (c) 2026 Santiago Hofwimmer
+* Independent Gaussian tolerances of two nominally equal resistors.
+Vinput in 0 1
+Rtop in out {{ nominal_resistance }}
+Rbottom out 0 {{ nominal_resistance }}
+
+.control
+* Positive integer seeds make each case reproducible, regardless of workers.
+setseed {{ seed | int }}
+let top_sample = {{ nominal_resistance }} * (1 + {{ sigma_fraction }} * sgauss(0))
+let bottom_sample = {{ nominal_resistance }} * (1 + {{ sigma_fraction }} * sgauss(0))
+alter Rtop $&top_sample
+alter Rbottom $&bottom_sample
+op
+let mc_gain = v(out) / v(in)
+let mc_offset = v(out) - 0.5
+quit
+.endc
+.end

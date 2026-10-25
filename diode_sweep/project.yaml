@@ -1,0 +1,4 @@
+name: Diode clamp
+description: A built-in diode model over temperature and series resistance.
+default_datasheet: sweep.yaml
+default_num_cores: 2

@@ -1,0 +1,14 @@
+* Copyright (c) 2026 Santiago Hofwimmer
+* AC amplitude is 1 V, so v(out) is also the complex transfer function.
+Vinput in 0 DC 0 AC 1
+Rseries in out {{ resistance }}
+Cload out 0 {{ capacitance }}
+
+.control
+ac dec 40 1 1Meg
+let gain_magnitude = mag(v(out))
+meas ac ac_cutoff when gain_magnitude=0.7071067812 fall=1
+meas ac ac_gain_low find gain_magnitude at=1
+quit
+.endc
+.end

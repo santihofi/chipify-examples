@@ -1,0 +1,81 @@
+# Troubleshooting
+
+## A command or datasheet is not found
+
+Activate the environment where Chipify is installed, and check
+`chipify-cli --version` and `ngspice --version`. A missing executable and a
+simulation that ran but failed are different problems.
+
+Launch from the example's project directory. For example:
+
+```bash
+cd voltage_divider
+chipify-cli -c divider.yaml --reports --json
+```
+
+Use the filename `divider.yaml`, rather than `datasheets/divider.yaml`, with
+`-c`. If an older Chipify rejects `--reports`, `--report-only` or `--batch`,
+use the source installation documented in the root README.
+
+## Results say FAIL
+
+Check `crashes` and `valid` in the JSON summary. The Monte Carlo tutorial
+intentionally produces some valid out-of-spec runs. Its failure counts
+demonstrate yield analysis; they are not installation failures.
+
+In the GUI, inspect the measurement limits and worst-case conditions. Keep
+units in mind: the YAML `unit` field is a label, not a scale conversion.
+
+## Results say ERROR, or measurements are missing
+
+Read `out/chipify.log`, the result CSV's error fields, and the GUI's simulation
+error section. For these ngspice examples, every scalar key must have a
+matching `let` or `meas` vector in the deck. A misspelled vector can leave
+the managed measurement output incomplete.
+
+For waveforms, make sure the testbench runs the corresponding `tran`, `dc`
+or `ac` analysis and that the requested signals exist. Keep one analysis
+per testbench as in these tutorials. Let Chipify own scalar echo/`wrdata`
+capture and leave `set wr_vecnames` disabled.
+
+## A model include works manually but fails in Chipify
+
+Simulator decks execute in scratch space. Relative include paths are resolved
+against the testbench directory, not the launch directory. Follow the
+[diode example](../diode_sweep/tb/clamp.spice): its model lives in `../models/`
+relative to `tb/`. Bare filenames can instead come from the project's
+`work/` directory for staged `.lib`, `.mod` and `.inc` files.
+
+Regenerate persisted netlist templates after moving a project: resolved
+include paths in those templates can be absolute host paths.
+
+## Reports or GUI history do not show what you expect
+
+- Add `--reports` or use Generate Reports; a `reports:` block alone does not
+  request generation during an ordinary CLI simulation.
+- Batch output lives under `out/<datasheet-stem>/`; single-datasheet output
+  lives directly under `out/`. Use the same mode for simulation and report-only.
+- Current GUI history only discovers the single-project `out/history/`.
+  Run a single datasheet when following the GUI tutorials.
+- Select the matching datasheet and a named history run before inspecting
+  results. Keep the run's waveform folders with its CSV and metadata.
+- Top-level scalar equations are currently applied in the GUI. The supplied
+  CLI report configurations use measured scalars; transient equations also
+  work in the CLI's transient renderer.
+- Changing a datasheet's limits does not reliably regrade old saved verdicts.
+  Use a copied datasheet and run a new simulation for a changed specification.
+
+## A run times out
+
+The supplied circuits are small and should finish well within the default
+per-run timeout. For larger experiments, set `sim_timeout_sec` in the GUI's
+Settings / Simulation panel or in a project-local `settings.json`.
+Use `num_cores` to limit simultaneous workers on memory-constrained machines.
+The introductory projects default to two workers.
+
+## The IHP source follower cannot find models or symbols
+
+That project additionally needs Xschem, IHP SG13G2, and the PDK's ngspice
+initialization, including its compiled device models. Follow
+[its setup guide](../source_follower/README.md); the four introductory
+projects do not need this environment.

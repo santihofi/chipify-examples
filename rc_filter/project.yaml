@@ -1,0 +1,6 @@
+name: RC low-pass filter
+description: Step response and AC bandwidth of three capacitor values.
+default_datasheet: step.yaml
+default_num_cores: 2
+# Used by --batch for the order of the combined report.
+datasheet_order: [step.yaml, frequency.yaml]

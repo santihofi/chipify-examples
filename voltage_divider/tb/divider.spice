@@ -1,0 +1,14 @@
+* Copyright (c) 2026 Santiago Hofwimmer
+* Ideal divider: the datasheet supplies voltages and resistance values.
+Vinput in 0 {{ vin }}
+Rtop in out {{ r_top }}
+Rbottom out 0 {{ r_bottom }}
+
+.control
+op
+let divider_vout = v(out)
+let divider_gain = v(out) / v(in)
+let divider_current = -i(Vinput)
+quit
+.endc
+.end

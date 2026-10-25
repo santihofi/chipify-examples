@@ -2,29 +2,122 @@
   <img src="./doc/images/logo.png" alt="Chipify" width="440">
 </p>
 
-# Examples for chipify
-![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)
-![Python](https://img.shields.io/badge/python-3.11%2B-blue.svg)
+# Examples for Chipify
 
-(c) 2026 Santiago Hofwimmer BSc
+Small circuits for learning [Chipify](https://github.com/santihofi/chipify):
+parameter sweeps, measurement limits, yield, waveform overlays, equations,
+exports, and batch reports.
 
-Institute for Integrated Circuits and Quantum Computing, Johannes Kepler University (JKU), Linz, Austria
+The four introductory projects use ordinary ngspice components and imported
+netlists. They need **no PDK and no Xschem installation**. The existing
+source-follower project adds Xschem and IHP SG13G2 devices.
 
-[Link to chipify repository](https://github.com/santihofi/chipify/)
+## Start here
 
-[Link to Youtube Channel (tutorials following soon)](https://www.youtube.com/@chipify-eda)
+Follow the projects in this order. Each directory is an independent Chipify
+project; run its commands from that directory.
 
-> [!IMPORTANT]
-> It is recomended to use the [IIC-OSIC-TOOLS](https://github.com/iic-jku/iic-osic-tools) container. Otherwise, you have to install [Ngspice](https://github.com/ngspice/ngspice), [Xschem](https://github.com/StefanSchippers/xschem) and [IHP-Open-PDK](https://github.com/IHP-GmbH/IHP-Open-PDK) manually as prerequisites.
+| Project | Cases | What it teaches |
+| --- | ---: | --- |
+| [Voltage divider](voltage_divider/README.md) | 6 | Jinja parameters, Cartesian sweeps, scalar measurements, limits, equations, scatter and corner-yield plots |
+| [RC low-pass filter](rc_filter/README.md) | 3 + 3 | Transient and Bode overlays, waveform equations, grouping, logarithmic parameter spacing, combined batch reports |
+| [Diode sweep](diode_sweep/README.md) | 6 | DC curves, temperature, relative model includes, sensitivity plots |
+| [Resistor Monte Carlo](monte_carlo/README.md) | 64 | Seeded random variation, intentional spec failures, histograms, distribution analysis, LaTeX export |
+| [IHP source follower](source_follower/README.md) | 27 / 1000 | Foundry corners, device mismatch, schematic entry, per-testbench ngspice/VACASK selection |
 
-## Description
+The measurement limits in the introductory projects are teaching examples,
+not component guarantees. The Monte Carlo example intentionally has yield
+below 100%; its runs should still complete without simulation errors.
 
-This repository contains the official examples for chipify. The intention is to show the functionality chipify provides. To run this examples, please install chipify: 
+## Install and run the first example
+
+You need Python 3.11 or newer, Chipify, and the `ngspice` executable on your
+`PATH`. On Debian/Ubuntu, ngspice is available with `sudo apt install ngspice`.
+The GUI also needs the Qt system libraries described in
+[Chipify's prerequisites](https://github.com/santihofi/chipify#prerequisites).
+
+These tutorials were validated against Chipify commit
+[`1960c81`](https://github.com/santihofi/chipify/commit/1960c8132a68676c9aa496f267d135d6f5af2d74).
+The source install below includes the netlist-import, reports, and batch
+features used here; older PyPI installations may not include all of them.
 
 ```bash
-python3 -m pip install chipify
+git clone https://github.com/santihofi/chipify-examples.git
+cd chipify-examples
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install "git+https://github.com/santihofi/chipify.git@1960c8132a68676c9aa496f267d135d6f5af2d74"
+ngspice --version
+chipify-cli --version
+
+cd voltage_divider
+chipify-cli -c divider.yaml --reports --json
 ```
+
+On Windows, create the environment with `python -m venv .venv` and activate
+it with `.venv\Scripts\Activate.ps1` in PowerShell. Install ngspice separately
+and add its executable directory to `PATH`.
+
+The first run should report **6 total, 6 valid, 6 passed, 100% yield**.
+It writes:
+
+- `out/simulation_results.csv`: parameter values, measurements and verdicts.
+- `out/history/`: timestamped CSVs and run metadata.
+- `out/reports/<timestamp>/`: PNG/SVG plots, a PDF and a Markdown report.
+- `out/reports/.latest`: the path of the newest report directory.
+
+For the desktop workflow, launch `chipify` from `voltage_divider/`, select
+`divider.yaml`, and start a simulation. Open Measurements, Histogram, and
+Analytics to inspect the results. Use **Generate Reports** for the same
+configured outputs. See the [feature walkthrough](docs/features.md).
+
+## How a project fits together
+
+```text
+project/
+├── project.yaml           # title, default datasheet, worker count, batch order
+├── datasheets/*.yaml      # parameter values, limits, signal capture, reports
+├── tb/*.spice             # circuit and simulator commands, with Jinja parameters
+├── models/                # optional local model files
+└── out/                   # generated results; ignored by git
+```
+
+Chipify uses the launch directory as the project root. A command such as
+`chipify-cli -c divider.yaml` searches `datasheets/` beneath that root;
+`-c` is a datasheet filename, not the project directory.
+The introductory projects use two workers via `default_num_cores` in
+`project.yaml`. A local `settings.json` can override that preference.
+
+## Guides
+
+- [Datasheet and testbench guide](docs/datasheets.md): how the YAML, SPICE
+  measurements, units, equations, and reports connect.
+- [Feature walkthrough](docs/features.md): where to try each feature in the
+  CLI and GUI, including batch and report-only runs.
+- [Troubleshooting](docs/troubleshooting.md): missing tools, paths, capture,
+  measurement errors, and expected failures.
+- [Source-follower setup](source_follower/README.md): additional IHP/Xschem
+  and VACASK requirements.
+
+## Verify the introductory examples
+
+From the repository root, with Chipify installed and ngspice on `PATH`:
+
+```bash
+python scripts/verify_examples.py
+```
+
+The check runs all four projects in temporary copies, checks their numeric
+results and waveform files, regenerates the RC batch report without
+simulating, and checks Monte Carlo reproducibility. It does not require
+Xschem, a PDK, a display, or a TeX installation.
+Use `--validate-only` to check project definitions without launching ngspice.
 
 ## License
 
+Copyright (c) 2026 Santiago Hofwimmer BSc, Institute for Integrated Circuits
+and Quantum Computing, Johannes Kepler University (JKU), Linz, Austria.
 Licensed under the [Apache License 2.0](LICENSE).
+
+[Chipify repository](https://github.com/santihofi/chipify) ·
+[Tutorial channel](https://www.youtube.com/@chipify-eda)

@@ -1,0 +1,28 @@
+# Copyright (c) 2026 Santiago Hofwimmer
+description: AC bandwidth and Bode overlays of the same three RC filters.
+parameters:
+  resistance: [1000]
+  capacitance: logspace(-7, -6, 3)
+tests:
+  frequency:
+    source: netlist
+    engine: ngspice
+    ac_cutoff:
+      min: 150
+      max: 1700
+      unit: Hz
+    ac_gain_low:
+      min: 0.999
+      max: 1.001
+    # Keep the complex signal: Chipify derives magnitude in dB and phase.
+    ac_signals: [v(out)]
+reports:
+  formats: [png, svg]
+  pdf: true
+  markdown: true
+  plots:
+    - type: bode
+      name: bode_by_capacitance
+      signals: [v(out)]
+      group: capacitance
+      runs: all_valid
