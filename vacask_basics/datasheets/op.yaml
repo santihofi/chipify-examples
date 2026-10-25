@@ -1,0 +1,43 @@
+# Copyright (c) 2026 Santiago Hofwimmer
+# VACASK writes raw vectors; scalar measures reduce each vector to a float.
+description: 'VACASK operating points: six ideal-divider parameter cases.'
+parameters:
+  input_voltage:
+  - 1.8
+  - 3.3
+  - 5.0
+  r_top:
+  - 10000
+  r_bottom:
+  - 10000
+  - 20000
+tests:
+  divider:
+    source: netlist
+    engine: vacask
+    measure:
+      vc_voltage: last(vout)
+      vc_gain: last(vout) / last(vin)
+      vc_current: -last(vinput_flow_br_)
+    vc_voltage:
+      min: 0.8
+      max: 3.4
+      unit: V
+    vc_gain:
+      min: 0.49
+      max: 0.68
+    vc_current:
+      min: 5.0e-05
+      max: 0.00026
+      unit: A
+reports:
+  formats:
+  - png
+  - svg
+  pdf: true
+  markdown: true
+  plots:
+  - type: scatter
+    name: vacask_output_vs_supply
+    x: input_voltage
+    y: vc_voltage

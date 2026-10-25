@@ -1,0 +1,5 @@
+name: VACASK basics
+description: Native operating point, transient, AC, DC and mixed-engine examples.
+default_datasheet: op.yaml
+default_num_cores: 2
+datasheet_order: [op.yaml, step.yaml, frequency.yaml, dc.yaml, mixed.yaml]

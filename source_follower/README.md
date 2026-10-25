@@ -66,5 +66,16 @@ which runs only an operating-point analysis. To add transient capture, select
 `tb_sf_tran` as a separate testbench with `transient_signals` and avoid asking
 it for the OP bench's scalar measurements.
 
-The new automated check covers the four PDK-free projects. This legacy IHP/
-VACASK example needs a configured PDK environment for end-to-end validation.
+Both original corner datasheets were verified in the installed IIC-OSIC-TOOLS
+container: 27/27 valid and passing cases for ngspice, and 27/27 for VACASK OP
+plus ngspice AC. From the repository root, reproduce these checks with:
+
+```bash
+bash scripts/verify_in_container.sh --source-follower
+```
+
+The checker copies this project to temporary storage and limits the copy to
+two workers. It leaves the shipped schematics, settings and datasheets intact.
+The legacy 1000-seed mismatch experiment is outside this automated check;
+its capture/equation caveats above still apply. See the
+[container guide](../docs/vacask.md) for the tested image and tool versions.

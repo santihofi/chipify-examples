@@ -1,0 +1,17 @@
+Chipify VACASK diode DC sweep
+// Copyright (c) 2026 Santiago Hofwimmer
+load "resistor.osdi"
+load "diode.osdi"
+include "../models/diode.lib"
+model r resistor
+model v vsource
+vdrive (vin 0) v dc=0
+rseries (vin vout) r r={{ series_resistance }}
+dclamp (vout 0) demo_diode
+control
+  options rawfile="ascii" temp={{ temperature }}
+  save default
+  sweep input_voltage instance="vdrive" parameter="dc" from=0 to=1 step=0.01
+    analysis dc1 op
+endc
+

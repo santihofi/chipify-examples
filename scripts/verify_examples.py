@@ -28,27 +28,36 @@ def require(condition, message):
         raise RuntimeError(message)
 
 
-def validate_definitions():
+def validate_definitions(definitions=None):
+    definitions = DATASHEETS if definitions is None else definitions
     from jinja2 import StrictUndefined, Template
     import yaml
     from chipify.schema import validate_datasheet
 
-    for project, sheets in DATASHEETS.items():
+    total_cases = 0
+    total_sheets = 0
+    for project, sheets in definitions.items():
         for name, expected in sheets.items():
             path = ROOT / project / "datasheets" / name
             stim = validate_datasheet(yaml.safe_load(path.read_text()))
             count = math.prod(len(values) for values in stim.params.values())
+            total_cases += count
+            total_sheets += 1
             require(count == expected, f"{path}: expected {expected} cases, got {count}")
             names = [value.name for test in stim.tests for value in test.value_lst]
             require(len(names) == len(set(names)), f"{path}: duplicate measurements")
             require(not set(names) & set(stim.params), f"{path}: measurement/input collision")
             for test in stim.tests:
-                require(test.engine == "ngspice" and test.netlist_source == "netlist",
-                        f"{path}: introductory benches must need only ngspice")
-                deck = ROOT / project / "tb" / f"{test.tb_path}.spice"
+                require(test.engine in {"ngspice", "vacask"} and test.netlist_source == "netlist",
+                        f"{path}: introductory benches must use imported netlists")
+                extension = ".sim" if test.engine == "vacask" else ".spice"
+                deck = ROOT / project / "tb" / f"{test.tb_path}{extension}"
                 require(deck.is_file(), f"{path}: missing testbench {deck}")
                 first = {key: values[0] for key, values in stim.params.items()}
-                Template(deck.read_text(), undefined=StrictUndefined).render(**first)
+                rendered = Template(deck.read_text(), undefined=StrictUndefined).render(**first)
+                if test.engine == "vacask":
+                    require(rendered.endswith("\n"),
+                            f"{deck}: VACASK needs a final newline after template rendering")
             plot_names = [spec.name for spec in stim.reports.plots]
             require(all(plot_names) and len(plot_names) == len(set(plot_names)),
                     f"{path}: plot names must be explicit and unique")
@@ -62,13 +71,13 @@ def validate_definitions():
                 continue
             destination = target.split("#", 1)[0]
             require((path.parent / destination).exists(), f"{path}: broken link {target}")
-    print("Validated five datasheets (82 cases), templates and local documentation links.")
+    print(f"Validated {total_sheets} datasheets ({total_cases} cases), templates and local documentation links.")
 
 
-def run_cli(project, *args):
+def run_cli(project, *args, timeout=240):
     completed = subprocess.run(
         [sys.executable, "-m", "chipify.cli", *args, "--json"],
-        cwd=project, capture_output=True, text=True, timeout=240,
+        cwd=project, capture_output=True, text=True, timeout=timeout,
     )
     log = completed.stdout + "\n" + completed.stderr
     (project / "verification.log").write_text(log)
@@ -92,7 +101,7 @@ def read_results(out_dir, expected, allow_fail=False):
     return rows
 
 
-def check_reports(record):
+def check_reports(record, min_pages=3):
     from pypdf import PdfReader
 
     directory = Path(record["reports_dir"])
@@ -102,7 +111,7 @@ def check_reports(record):
         require(paths and all(path.stat().st_size > 0 for path in paths),
                 f"{directory}: missing/empty {extension} outputs")
     for path in directory.glob("*.pdf"):
-        require(len(PdfReader(path).pages) >= 3, f"{path}: incomplete report")
+        require(len(PdfReader(path).pages) >= min_pages, f"{path}: incomplete report")
 
 
 def check_waves(out_dir, kind, bench, expected, columns):
@@ -221,6 +230,14 @@ def verify_runtime(workspace):
     print("Analytical checks, waveform/equation checks, batch report-only and seeded rerun passed.")
 
 
+def configure_environment(workspace):
+    # Keep user plugins and plotting caches out of reproducibility checks.
+    os.environ["CHIPIFY_PLUGINS"] = str(workspace / "plugins")
+    os.environ["MPLCONFIGDIR"] = str(workspace / "matplotlib")
+    os.environ["PYTHONDONTWRITEBYTECODE"] = "1"
+    os.environ["OPENBLAS_NUM_THREADS"] = "1"
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--validate-only", action="store_true",
@@ -228,11 +245,7 @@ def main():
     args = parser.parse_args()
     with tempfile.TemporaryDirectory(prefix="chipify_examples_") as directory:
         workspace = Path(directory)
-        # Keep user plugins and plotting caches out of the reproducibility check.
-        os.environ["CHIPIFY_PLUGINS"] = str(workspace / "plugins")
-        os.environ["MPLCONFIGDIR"] = str(workspace / "matplotlib")
-        os.environ["PYTHONDONTWRITEBYTECODE"] = "1"
-        os.environ["OPENBLAS_NUM_THREADS"] = "1"
+        configure_environment(workspace)
         validate_definitions()
         if not args.validate_only:
             require(shutil.which("ngspice") is not None, "ngspice is not on PATH")

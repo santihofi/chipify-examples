@@ -1,0 +1,27 @@
+# Copyright (c) 2026 Santiago Hofwimmer
+# Capture the complex waveform; the verifier checks its analytical transfer.
+description: VACASK complex AC waveforms for three RC filters; no scalar AC acceptance
+  test.
+parameters:
+  resistance:
+  - 1000
+  capacitance: logspace(-7, -6, 3)
+tests:
+  frequency:
+    source: netlist
+    engine: vacask
+    ac_signals:
+    - vout
+reports:
+  formats:
+  - png
+  - svg
+  pdf: true
+  markdown: true
+  plots:
+  - type: bode
+    name: vacask_bode_by_capacitance
+    signals:
+    - vout
+    group: capacitance
+    runs: all_valid

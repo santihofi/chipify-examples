@@ -19,6 +19,9 @@ Run commands from the relevant project directory after the root
 | QQ, ECDF, yield versus spec | [Tolerance](../monte_carlo/README.md) | GUI Analytics modes and measurement selector |
 | PNG, SVG, PDF, Markdown, LaTeX | [Tolerance](../monte_carlo/datasheets/tolerance.yaml) | `reports`, `--reports`, generated files |
 | Batch order, combined PDF, report-only | [RC](../rc_filter/README.md) | `project.yaml`, CLI recipes below |
+| Native VACASK OP, transient, AC and DC | [VACASK basics](../vacask_basics/README.md) | `.sim` decks, raw-vector reductions and waveform capture |
+| Mixed VACASK/ngspice measurements | [Engine comparison](../vacask_basics/datasheets/mixed.yaml) | `engine` per testbench, distinct scalar names |
+| Container verification | [Container guide](vacask.md) | Installed IIC-OSIC-TOOLS, temporary copies, numerical and report checks |
 | Xschem and per-testbench engines | [Source follower](../source_follower/README.md) | `.sch` files and `engine` keys |
 
 ## Single-datasheet reports

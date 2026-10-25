@@ -1,0 +1,13 @@
+* Copyright (c) 2026 Santiago Hofwimmer
+* Companion to divider.sim; each engine has its own measurement names.
+Vinput vin 0 {{ input_voltage }}
+Rtop vin vout {{ r_top }}
+Rbottom vout 0 {{ r_bottom }}
+.control
+op
+let ng_voltage = v(vout)
+let ng_gain = v(vout) / v(vin)
+let ng_current = -i(Vinput)
+quit
+.endc
+.end

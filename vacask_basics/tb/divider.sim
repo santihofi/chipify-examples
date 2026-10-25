@@ -1,0 +1,16 @@
+Chipify VACASK divider
+// Copyright (c) 2026 Santiago Hofwimmer
+// Standard VACASK modules are located through its installed module path.
+load "resistor.osdi"
+model r resistor
+model v vsource
+vinput (vin 0) v dc={{ input_voltage }}
+rtop (vin vout) r r={{ r_top }}
+rbottom (vout 0) r r={{ r_bottom }}
+control
+  // ASCII output works with Chipify's built-in raw-file reader.
+  options rawfile="ascii"
+  save default
+  analysis op1 op
+endc
+

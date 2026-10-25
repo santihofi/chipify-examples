@@ -79,3 +79,18 @@ That project additionally needs Xschem, IHP SG13G2, and the PDK's ngspice
 initialization, including its compiled device models. Follow
 [its setup guide](../source_follower/README.md); the four introductory
 projects do not need this environment.
+
+## VACASK reports a syntax error at the end of the file
+
+Keep an extra blank line after `endc` in `.sim` templates. Jinja removes one
+trailing newline when Chipify renders a deck; the tested VACASK parser needs
+a newline after the final command. See the supplied
+[divider template](../vacask_basics/tb/divider.sim).
+
+## VACASK warns about PyOPUS or has missing measurements
+
+The optional PyOPUS `RawFile` API is unavailable in the tested image, but
+Chipify's built-in reader handles the new decks' ASCII raw files. Inspect
+actual values and capture files before treating the warning as a failed run.
+Use plain node names such as `vout`, scalar reductions such as `last(vout)`,
+and one analysis per deck. See [VACASK compatibility](vacask.md#capture-and-compatibility).

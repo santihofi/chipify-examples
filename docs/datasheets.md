@@ -8,7 +8,7 @@ Start with the fully commented
 
 | File/block | Responsibility |
 | --- | --- |
-| `tb/*.spice` or an Xschem testbench | Circuit, simulator analyses, and named `let`/`meas` vectors |
+| `tb/*.spice`, `tb/*.sim` or an Xschem testbench | Circuit, simulator analyses, and raw vectors or named measurements |
 | `parameters:` | Values substituted into the testbench for every parameter case |
 | `tests:` | Testbench selection, measurement limits, and requested waveform signals |
 | `equations:` | Derived scalar results for the GUI |
@@ -42,10 +42,29 @@ shows the complete pattern.
 `engine: ngspice`. With the default `source: xschem`, the same key selects
 `tb/divider.sch`. VACASK netlists use `.sim` and `engine: vacask`.
 
-Every scalar measurement key must match a vector that the testbench defines.
+For ngspice, every scalar measurement key must match a vector that the testbench defines.
 For example, `divider_vout` in the YAML matches `let divider_vout = v(out)`.
 Keep measurement names unique across all testbenches in one datasheet, and
 use separate names for parameters, equations, and measured outputs.
+
+For VACASK, the testbench's `measure:` mapping reduces raw vectors while
+the measurement's own mapping supplies its limits:
+
+```yaml
+tests:
+  divider:
+    source: netlist
+    engine: vacask
+    measure:
+      vc_voltage: last(vout)
+    vc_voltage: {min: 0.8, max: 3.4, unit: V}
+```
+
+Raw names are plain node names; `vinput:flow(br)` becomes
+`vinput_flow_br_`. See [VACASK basics](../vacask_basics/README.md) for
+OP, waveform reductions, DC and mixed-engine examples. Retain the final
+blank line in native `.sim` templates so Jinja rendering leaves the newline
+VACASK requires after `endc`.
 
 `min` and `max` are inclusive acceptance limits. `typ` is a reference value;
 it does not introduce another sweep or an acceptance test. An empty mapping

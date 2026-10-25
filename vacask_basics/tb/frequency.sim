@@ -1,0 +1,16 @@
+Chipify VACASK RC frequency response
+// Copyright (c) 2026 Santiago Hofwimmer
+load "resistor.osdi"
+load "capacitor.osdi"
+model r resistor
+model c capacitor
+model v vsource
+vinput (vin 0) v dc=0 mag=1
+rseries (vin vout) r r={{ resistance }}
+cload (vout 0) c c={{ capacitance }}
+control
+  options rawfile="ascii"
+  save default
+  analysis ac1 ac from=1 to=1M mode="dec" points=40
+endc
+

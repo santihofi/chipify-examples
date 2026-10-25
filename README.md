@@ -8,9 +8,11 @@ Small circuits for learning [Chipify](https://github.com/santihofi/chipify):
 parameter sweeps, measurement limits, yield, waveform overlays, equations,
 exports, and batch reports.
 
-The four introductory projects use ordinary ngspice components and imported
-netlists. They need **no PDK and no Xschem installation**. The existing
-source-follower project adds Xschem and IHP SG13G2 devices.
+The four ngspice introductions and the VACASK basics use ordinary components
+and imported netlists. They need **no PDK and no Xschem installation**. Use
+the installed IIC-OSIC-TOOLS container to run and verify the examples; it also
+provides Xschem and IHP SG13G2 for the existing source-follower project. See
+[container setup and verification](docs/vacask.md).
 
 ## Start here
 
@@ -23,6 +25,7 @@ project; run its commands from that directory.
 | [RC low-pass filter](rc_filter/README.md) | 3 + 3 | Transient and Bode overlays, waveform equations, grouping, logarithmic parameter spacing, combined batch reports |
 | [Diode sweep](diode_sweep/README.md) | 6 | DC curves, temperature, relative model includes, sensitivity plots |
 | [Resistor Monte Carlo](monte_carlo/README.md) | 64 | Seeded random variation, intentional spec failures, histograms, distribution analysis, LaTeX export |
+| [VACASK basics](vacask_basics/README.md) | 24 | Native OP, transient, AC and DC analyses; raw-vector measurements; ngspice comparison in one datasheet |
 | [IHP source follower](source_follower/README.md) | 27 / 1000 | Foundry corners, device mismatch, schematic entry, per-testbench ngspice/VACASK selection |
 
 The measurement limits in the introductory projects are teaching examples,
@@ -77,7 +80,7 @@ configured outputs. See the [feature walkthrough](docs/features.md).
 project/
 ├── project.yaml           # title, default datasheet, worker count, batch order
 ├── datasheets/*.yaml      # parameter values, limits, signal capture, reports
-├── tb/*.spice             # circuit and simulator commands, with Jinja parameters
+├── tb/*.spice or *.sim    # circuit and simulator commands, with Jinja parameters
 ├── models/                # optional local model files
 └── out/                   # generated results; ignored by git
 ```
@@ -96,22 +99,36 @@ The introductory projects use two workers via `default_num_cores` in
   CLI and GUI, including batch and report-only runs.
 - [Troubleshooting](docs/troubleshooting.md): missing tools, paths, capture,
   measurement errors, and expected failures.
+- [VACASK and container verification](docs/vacask.md): native simulations,
+  mixed engines, capture conventions, and reproducible checks.
 - [Source-follower setup](source_follower/README.md): additional IHP/Xschem
   and VACASK requirements.
 
-## Verify the introductory examples
+## Verify the examples in IIC-OSIC-TOOLS
 
-From the repository root, with Chipify installed and ngspice on `PATH`:
+With Docker running and the IIC-OSIC-TOOLS image installed, keep a Chipify
+checkout beside this repository and run:
 
 ```bash
-python scripts/verify_examples.py
+bash scripts/verify_in_container.sh --source-follower
 ```
 
-The check runs all four projects in temporary copies, checks their numeric
-results and waveform files, regenerates the RC batch report without
-simulating, and checks Monte Carlo reproducibility. It does not require
-Xschem, a PDK, a display, or a TeX installation.
-Use `--validate-only` to check project definitions without launching ngspice.
+Set `CHIPIFY_SOURCE` if the tool checkout is elsewhere. The script mounts
+both checkouts read-only and runs temporary project copies using the image's
+VACASK, ngspice, Xschem and PDK. It checks 82 introductory ngspice cases,
+24 native/mixed VACASK cases, and both 27-case IHP corner sweeps. It also
+checks numerical formulas, waveforms, report-only regeneration and a seeded
+64-case repeat with a different worker count. CI uses the same wrapper.
+See [the container guide](docs/vacask.md) for image selection and commands
+inside an already running container.
+
+For an installation without the container, the four ngspice introductions
+can also be checked with `python scripts/verify_examples.py`. The native
+VACASK suite uses `python scripts/verify_vacask.py`; add `--source-follower`
+only with Xschem and the IHP PDK configured. Both Python scripts accept
+`--validate-only` to check definitions without launching simulators.
+These checks need no display or TeX installation. They do not run the legacy
+1000-seed IHP mismatch experiment.
 
 ## License
 

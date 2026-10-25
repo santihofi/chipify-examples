@@ -1,0 +1,41 @@
+# Copyright (c) 2026 Santiago Hofwimmer
+# The raw branch name vdrive:flow(br) becomes vdrive_flow_br_ in expressions.
+description: VACASK diode transfer curves over temperature and series resistance.
+parameters:
+  temperature:
+  - -20
+  - 27
+  - 80
+  series_resistance:
+  - 500
+  - 1000
+tests:
+  clamp:
+    source: netlist
+    engine: vacask
+    measure:
+      vc_forward_voltage: last(vout)
+      vc_forward_current: -last(vdrive_flow_br_)
+    vc_forward_voltage:
+      min: 0.4
+      max: 0.9
+      unit: V
+    vc_forward_current:
+      min: 5.0e-05
+      max: 0.0015
+      unit: A
+    dc_signals:
+    - vout
+reports:
+  formats:
+  - png
+  - svg
+  pdf: true
+  markdown: true
+  plots:
+  - type: dc
+    name: vacask_diode_by_temperature
+    signals:
+    - vout
+    group: temperature
+    runs: all_valid

@@ -1,0 +1,16 @@
+Chipify VACASK RC step
+// Copyright (c) 2026 Santiago Hofwimmer
+load "resistor.osdi"
+load "capacitor.osdi"
+model r resistor
+model c capacitor
+model v vsource
+vinput (vin 0) v type="pulse" val0=0 val1=1 delay=1u rise=1n fall=1n width=20m period=40m
+rseries (vin vout) r r={{ resistance }}
+cload (vout 0) c c={{ capacitance }}
+control
+  options rawfile="ascii"
+  save default
+  analysis tran1 tran stop=8m step=1u maxstep=1u
+endc
+

@@ -1,4 +1,4 @@
-name: Verify introductory examples
+name: Verify examples in IIC-OSIC-TOOLS
 
 on:
   push:
@@ -7,19 +7,26 @@ on:
 permissions:
   contents: read
 
+env:
+  CHIPIFY_IIC_IMAGE: hpretl/iic-osic-tools@sha256:306585de35d198e70ea58950f77147c86f56c698726a19afea9f1c83009557be
+
 jobs:
   examples:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
-      - name: Install ngspice
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y --no-install-recommends ngspice
-      - name: Install the documented Chipify revision
-        run: python -m pip install "git+https://github.com/santihofi/chipify.git@1960c8132a68676c9aa496f267d135d6f5af2d74"
-      - name: Verify circuits, reports and repeatability
-        run: python scripts/verify_examples.py
+          path: examples
+      - uses: actions/checkout@v4
+        with:
+          repository: santihofi/chipify
+          ref: 1960c8132a68676c9aa496f267d135d6f5af2d74
+          path: chipify
+      - name: Make room for the EDA image on the disposable runner
+        run: sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL
+      - name: Pull the tested IIC-OSIC-TOOLS image
+        run: docker pull "$CHIPIFY_IIC_IMAGE"
+      - name: Verify ngspice, VACASK, reports and IHP corners
+        working-directory: examples
+        run: bash scripts/verify_in_container.sh --source-follower
