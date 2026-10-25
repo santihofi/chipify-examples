@@ -1,0 +1,18 @@
+GF180MCU CMOS inverter timing
+* Copyright (c) 2026 Santiago Hofwimmer
+.include "{{ pdk_root }}/gf180mcuD/libs.tech/ngspice/design.ngspice"
+.lib "{{ pdk_root }}/gf180mcuD/libs.tech/ngspice/sm141064.ngspice" {{ corner }}
+VDD vdd 0 {{ supply }}
+VIN in 0 pulse(0 {{ supply }} 1n 100p 100p 10n 20n)
+* GF180 wrapper uses SI geometry: explicit u suffixes are required here.
+XMN out in 0 0 nfet_03v3 w=1u l=0.28u
+XMP out in vdd vdd pfet_03v3 w=2u l=0.28u
+CLOAD out 0 {{ load_capacitance }}
+.temp {{ temperature }}
+.control
+  tran 5p 45n
+  meas tran inv_tphl TRIG v(in) VAL={{ supply / 2 }} RISE=2 TARG v(out) VAL={{ supply / 2 }} FALL=2
+  meas tran inv_tplh TRIG v(in) VAL={{ supply / 2 }} FALL=2 TARG v(out) VAL={{ supply / 2 }} RISE=2
+  quit
+.endc
+.end

@@ -1,0 +1,26 @@
+# Copyright (c) 2026 Santiago Hofwimmer
+# Three corners x two loads = six cases; use the second input/output edges.
+description: GF180MCU loaded-inverter propagation delay at nominal supply and 27 C.
+parameters:
+  pdk_root: [/foss/pdks]
+  corner: [typical, ss, ff]
+  supply: [3.3]
+  temperature: [27]
+  load_capacitance: [1.0e-14, 5.0e-14]
+tests:
+  timing:
+    source: netlist
+    engine: ngspice
+    inv_tphl: {min: 1.0e-12, max: 5.0e-9, unit: s}
+    inv_tplh: {min: 1.0e-12, max: 5.0e-9, unit: s}
+    transient_signals: [v(in), v(out)]
+reports:
+  formats: [png, svg]
+  pdf: true
+  markdown: true
+  plots:
+    - type: transient
+      name: inverter_timing_by_load
+      signals: [v(in), v(out)]
+      group: load_capacitance
+      runs: all_valid

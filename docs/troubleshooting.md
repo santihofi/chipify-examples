@@ -94,3 +94,16 @@ Chipify's built-in reader handles the new decks' ASCII raw files. Inspect
 actual values and capture files before treating the warning as a failed run.
 Use plain node names such as `vout`, scalar reductions such as `last(vout)`,
 and one analysis per deck. See [VACASK compatibility](vacask.md#capture-and-compatibility).
+
+## SKY130A or GF180 models fail to load, time out, or have incorrect dimensions
+
+Use the [shared PDK initialization and model setup](pdks.md#model-setup-and-geometry)
+before launching Chipify. Set `SPICE_USERINIT_DIR` to its absolute directory;
+the container's default IHP initialization and a project-local `.spiceinit`
+are insufficient for these runs in Chipify's scratch directory. Keep the
+60-second timeout from the supplied project settings for model loading.
+
+Check `pdk_root` in both datasheets. GF180's installed directory is
+`gf180mcuD`, its typical corner is `typical`, and it needs `design.ngspice`
+before the corner library. SKY130 and GF180 also use different geometry
+conventions; use the supplied transistor instance lines as a reference.

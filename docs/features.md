@@ -22,6 +22,7 @@ Run commands from the relevant project directory after the root
 | Native VACASK OP, transient, AC and DC | [VACASK basics](../vacask_basics/README.md) | `.sim` decks, raw-vector reductions and waveform capture |
 | Mixed VACASK/ngspice measurements | [Engine comparison](../vacask_basics/datasheets/mixed.yaml) | `engine` per testbench, distinct scalar names |
 | Container verification | [Container guide](vacask.md) | Installed IIC-OSIC-TOOLS, temporary copies, numerical and report checks |
+| Foundry PVT and load-dependent timing | [SKY130A / GF180MCU](pdks.md) | Installed model libraries, process corners, voltage/temperature and capacitive loads |
 | Xschem and per-testbench engines | [Source follower](../source_follower/README.md) | `.sch` files and `engine` keys |
 
 ## Single-datasheet reports

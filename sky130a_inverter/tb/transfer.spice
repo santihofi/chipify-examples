@@ -1,0 +1,21 @@
+SKY130A CMOS inverter transfer
+* Copyright (c) 2026 Santiago Hofwimmer
+.lib "{{ pdk_root }}/sky130A/libs.tech/ngspice/sky130.lib.spice" {{ corner }}
+VDD vdd 0 {{ supply }}
+VIN in 0 0
+* SKY130 library sets scale=1u: geometry parameters here are micrometres.
+XMN out in 0 0 sky130_fd_pr__nfet_01v8 w=1 l=0.15
+XMP out in vdd vdd sky130_fd_pr__pfet_01v8 w=2 l=0.15
+.temp {{ temperature }}
+.control
+  dc VIN 0 {{ supply }} {{ supply / 200 }}
+  let inv_output_high = v(out)[0]
+  let inv_output_low = v(out)[length(v(out))-1]
+  let inv_high_fraction = inv_output_high / {{ supply }}
+  let inv_low_fraction = inv_output_low / {{ supply }}
+  meas dc inv_switch_voltage FIND v(in) WHEN v(out)={{ supply / 2 }} FALL=1
+  let inv_switch_fraction = inv_switch_voltage / {{ supply }}
+  let inv_peak_supply_current = vecmax(-i(VDD))
+  quit
+.endc
+.end

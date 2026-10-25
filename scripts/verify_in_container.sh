@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Copyright (c) 2026 Santiago Hofwimmer
-# Run both tutorial suites in the installed IIC-OSIC-TOOLS image.
+# Run tutorial and foundry PDK suites in the installed IIC-OSIC-TOOLS image.
 set -euo pipefail
 
 examples_root="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -25,4 +25,5 @@ docker run --rm --pull=never \
         python3 -c "import chipify; print(chipify.version_info())"
         python3 /review/examples/scripts/verify_examples.py
         python3 /review/examples/scripts/verify_vacask.py "$@"
+        python3 /review/examples/scripts/verify_pdks.py
     ' bash "$@"

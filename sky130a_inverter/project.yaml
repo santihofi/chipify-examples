@@ -1,0 +1,5 @@
+name: SKY130A CMOS inverter
+description: Foundry-model DC transfer and loaded transient timing with ngspice.
+default_datasheet: transfer.yaml
+default_num_cores: 2
+datasheet_order: [transfer.yaml, timing.yaml]

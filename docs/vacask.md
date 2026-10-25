@@ -1,7 +1,7 @@
 # VACASK and container verification
 
 Use IIC-OSIC-TOOLS for example verification: it supplies VACASK, ngspice,
-Xschem and the IHP PDK in one configured environment. The check scripts run
+Xschem and the IHP, SKY130A and GF180MCU PDKs in one configured environment. The check scripts run
 on temporary project copies and inspect measurements, capture files and
 reports, rather than trusting the simulator or CLI exit code alone.
 
@@ -23,6 +23,7 @@ into `/tmp`, and runs:
 2. All five native/mixed VACASK datasheets and report-only regeneration.
 3. Both 27-case IHP source-follower corner datasheets when
    `--source-follower` is supplied.
+4. The 66 [SKY130A/GF180MCU inverter cases](pdks.md), always included.
 
 Set `CHIPIFY_IIC_IMAGE` to an installed tag or digest to choose another image.
 The script does not restart an existing GUI container. A missing local image
@@ -43,6 +44,7 @@ docker exec iic-osic-tools_xserver bash -lc '
   python3 -c "import chipify; print(chipify.version_info())"
   python3 /foss/designs/chipify-examples/scripts/verify_examples.py
   python3 /foss/designs/chipify-examples/scripts/verify_vacask.py --source-follower
+  python3 /foss/designs/chipify-examples/scripts/verify_pdks.py
 '
 ```
 

@@ -1,0 +1,17 @@
+SKY130A CMOS inverter timing
+* Copyright (c) 2026 Santiago Hofwimmer
+.lib "{{ pdk_root }}/sky130A/libs.tech/ngspice/sky130.lib.spice" {{ corner }}
+VDD vdd 0 {{ supply }}
+VIN in 0 pulse(0 {{ supply }} 1n 100p 100p 10n 20n)
+* SKY130 library sets scale=1u: geometry parameters here are micrometres.
+XMN out in 0 0 sky130_fd_pr__nfet_01v8 w=1 l=0.15
+XMP out in vdd vdd sky130_fd_pr__pfet_01v8 w=2 l=0.15
+CLOAD out 0 {{ load_capacitance }}
+.temp {{ temperature }}
+.control
+  tran 5p 45n
+  meas tran inv_tphl TRIG v(in) VAL={{ supply / 2 }} RISE=2 TARG v(out) VAL={{ supply / 2 }} FALL=2
+  meas tran inv_tplh TRIG v(in) VAL={{ supply / 2 }} FALL=2 TARG v(out) VAL={{ supply / 2 }} RISE=2
+  quit
+.endc
+.end

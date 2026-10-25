@@ -1,0 +1,22 @@
+GF180MCU CMOS inverter transfer
+* Copyright (c) 2026 Santiago Hofwimmer
+.include "{{ pdk_root }}/gf180mcuD/libs.tech/ngspice/design.ngspice"
+.lib "{{ pdk_root }}/gf180mcuD/libs.tech/ngspice/sm141064.ngspice" {{ corner }}
+VDD vdd 0 {{ supply }}
+VIN in 0 0
+* GF180 wrapper uses SI geometry: explicit u suffixes are required here.
+XMN out in 0 0 nfet_03v3 w=1u l=0.28u
+XMP out in vdd vdd pfet_03v3 w=2u l=0.28u
+.temp {{ temperature }}
+.control
+  dc VIN 0 {{ supply }} {{ supply / 200 }}
+  let inv_output_high = v(out)[0]
+  let inv_output_low = v(out)[length(v(out))-1]
+  let inv_high_fraction = inv_output_high / {{ supply }}
+  let inv_low_fraction = inv_output_low / {{ supply }}
+  meas dc inv_switch_voltage FIND v(in) WHEN v(out)={{ supply / 2 }} FALL=1
+  let inv_switch_fraction = inv_switch_voltage / {{ supply }}
+  let inv_peak_supply_current = vecmax(-i(VDD))
+  quit
+.endc
+.end

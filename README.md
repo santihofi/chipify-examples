@@ -11,7 +11,7 @@ exports, and batch reports.
 The four ngspice introductions and the VACASK basics use ordinary components
 and imported netlists. They need **no PDK and no Xschem installation**. Use
 the installed IIC-OSIC-TOOLS container to run and verify the examples; it also
-provides Xschem and IHP SG13G2 for the existing source-follower project. See
+provides SKY130A/GF180 models and Xschem/IHP SG13G2 for the foundry projects. See
 [container setup and verification](docs/vacask.md).
 
 ## Start here
@@ -26,6 +26,8 @@ project; run its commands from that directory.
 | [Diode sweep](diode_sweep/README.md) | 6 | DC curves, temperature, relative model includes, sensitivity plots |
 | [Resistor Monte Carlo](monte_carlo/README.md) | 64 | Seeded random variation, intentional spec failures, histograms, distribution analysis, LaTeX export |
 | [VACASK basics](vacask_basics/README.md) | 24 | Native OP, transient, AC and DC analyses; raw-vector measurements; ngspice comparison in one datasheet |
+| [SKY130A inverter](sky130a_inverter/README.md) | 27 + 6 | Foundry PVT transfer curves, logic levels, loaded transient timing |
+| [GF180MCU inverter](gf180_inverter/README.md) | 27 + 6 | 3.3 V foundry devices, model setup, geometry units and propagation delay |
 | [IHP source follower](source_follower/README.md) | 27 / 1000 | Foundry corners, device mismatch, schematic entry, per-testbench ngspice/VACASK selection |
 
 The measurement limits in the introductory projects are teaching examples,
@@ -101,6 +103,8 @@ The introductory projects use two workers via `default_num_cores` in
   measurement errors, and expected failures.
 - [VACASK and container verification](docs/vacask.md): native simulations,
   mixed engines, capture conventions, and reproducible checks.
+- [SKY130A and GF180MCU tests](docs/pdks.md): installed models, compatibility
+  settings, PVT and load sweeps, and waveform-based numerical checks.
 - [Source-follower setup](source_follower/README.md): additional IHP/Xschem
   and VACASK requirements.
 
@@ -116,8 +120,8 @@ bash scripts/verify_in_container.sh --source-follower
 Set `CHIPIFY_SOURCE` if the tool checkout is elsewhere. The script mounts
 both checkouts read-only and runs temporary project copies using the image's
 VACASK, ngspice, Xschem and PDK. It checks 82 introductory ngspice cases,
-24 native/mixed VACASK cases, and both 27-case IHP corner sweeps. It also
-checks numerical formulas, waveforms, report-only regeneration and a seeded
+24 native/mixed VACASK cases, 66 SKY130A/GF180 cases, and both 27-case IHP
+corner sweeps. It also checks numerical formulas, waveforms, report-only regeneration and a seeded
 64-case repeat with a different worker count. CI uses the same wrapper.
 See [the container guide](docs/vacask.md) for image selection and commands
 inside an already running container.
@@ -125,7 +129,8 @@ inside an already running container.
 For an installation without the container, the four ngspice introductions
 can also be checked with `python scripts/verify_examples.py`. The native
 VACASK suite uses `python scripts/verify_vacask.py`; add `--source-follower`
-only with Xschem and the IHP PDK configured. Both Python scripts accept
+only with Xschem and the IHP PDK configured. The foundry tests use
+`python scripts/verify_pdks.py`. All three scripts accept
 `--validate-only` to check definitions without launching simulators.
 These checks need no display or TeX installation. They do not run the legacy
 1000-seed IHP mismatch experiment.

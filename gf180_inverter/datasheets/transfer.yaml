@@ -1,0 +1,34 @@
+# Copyright (c) 2026 Santiago Hofwimmer
+# Three corners x three supplies x three temperatures = 27 cases.
+description: GF180MCU inverter DC transfer across process, voltage and temperature.
+parameters:
+  pdk_root: [/foss/pdks]
+  corner: [typical, ss, ff]
+  supply: [3.0, 3.3, 3.6]
+  temperature: [-40, 27, 125]
+tests:
+  transfer:
+    source: netlist
+    engine: ngspice
+    inv_output_high: {unit: V}
+    inv_output_low: {unit: V}
+    inv_high_fraction: {min: 0.99, max: 1.001}
+    inv_low_fraction: {min: -0.001, max: 0.01}
+    inv_switch_voltage: {unit: V}
+    inv_switch_fraction: {min: 0.25, max: 0.75}
+    inv_peak_supply_current: {min: 1.0e-7, max: 0.01, unit: A}
+    dc_signals: [v(in), v(out)]
+reports:
+  formats: [png, svg]
+  pdf: true
+  markdown: true
+  plots:
+    - type: dc
+      name: inverter_transfer_by_corner
+      signals: [v(out)]
+      group: corner
+      runs: all_valid
+    - type: scatter
+      name: switching_voltage_vs_supply
+      x: supply
+      y: inv_switch_voltage

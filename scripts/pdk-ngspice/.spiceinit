@@ -1,0 +1,6 @@
+* Copyright (c) 2026 Santiago Hofwimmer
+* Match the installed SKY130 model compatibility settings before parsing.
+set ngbehavior=hsa
+set skywaterpdk
+set ng_nomodcheck
+set num_threads=1
