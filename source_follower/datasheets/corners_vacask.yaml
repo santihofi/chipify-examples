@@ -20,6 +20,3 @@ tests:
     bandwidth:
       unit: 'Hz'
     gain: {}
-equations:
-  vd: outp-outn
-  ve: (outp+outn)/2

@@ -56,15 +56,18 @@ Add a `reports:` block using [the guide](../docs/datasheets.md) before expecting
 `--reports` to produce configured documents and figures.
 
 Check measurement names against each testbench: the ngspice OP bench exposes
-`vd` and `ve`, while the VACASK OP bench exposes `outp` and `outn`.
-An equation must use columns available in that run. For seeded experiments,
-render positive integer seeds in the testbench, as shown in the standalone
-[Monte Carlo example](../monte_carlo/tb/tolerance.spice).
+`vd` and `ve`, while the VACASK OP bench exposes `outp` and `outn` and derives
+`vd` and `ve` from them with `measure:`. An equation must use columns available
+in that run and must not reuse a measurement's name.
 
-The existing mismatch datasheet requests transient signals on `tb_sf_op`,
-which runs only an operating-point analysis. To add transient capture, select
-`tb_sf_tran` as a separate testbench with `transient_signals` and avoid asking
-it for the OP bench's scalar measurements.
+The benches write `.option SEED = {{ seed }}` directly. ngspice rejects a seed
+of 0 and then seeds from the clock, so the datasheets start their seeds at 1;
+keep that when you change the seed range. The standalone
+[Monte Carlo example](../monte_carlo/tb/tolerance.spice) shows the same rule.
+
+`tb_sf_op` runs only an operating-point analysis, so it captures no waveforms.
+To add transient capture, select `tb_sf_tran` as a separate testbench with
+`transient_signals` and avoid asking it for the OP bench's scalar measurements.
 
 Both original corner datasheets were verified in the installed IIC-OSIC-TOOLS
 container: 27/27 valid and passing cases for ngspice, and 27/27 for VACASK OP
@@ -76,6 +79,6 @@ bash scripts/verify_in_container.sh --source-follower
 
 The checker copies this project to temporary storage and limits the copy to
 two workers. It leaves the shipped schematics, settings and datasheets intact.
-The legacy 1000-seed mismatch experiment is outside this automated check;
-its capture/equation caveats above still apply. See the
-[container guide](../docs/vacask.md) for the tested image and tool versions.
+The 1000-seed mismatch experiment is outside this automated check because of
+its run time. See the [container guide](../docs/vacask.md) for the tested image
+and tool versions.

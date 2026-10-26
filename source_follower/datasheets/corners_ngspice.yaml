@@ -1,6 +1,6 @@
 parameters:
   temp: [-40, 27, 100]
-  seed: range(1)
+  seed: [1]
   vdd: [1.45, 1.5, 1.55]
   vincm: [0.75]
   sigma: [1]
@@ -24,7 +24,3 @@ tests:
       unit: 'Hz'
     engine: ngspice
     ac_signals: [outp, outn]
-equations:
-  vd_tr: outp-outn
-transient_equations:
-  out_d: outp-outn
