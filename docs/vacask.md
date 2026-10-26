@@ -103,7 +103,7 @@ simulator errors, including the VACASK OP/ngspice AC combination.
 The new 24-case VACASK suite checks OP/DC/step measurements against circuit
 formulas, every AC magnitude/phase sample against the analytical transfer,
 all waveform files, mixed-engine agreement, and configured reports.
-The 1000-seed legacy IHP mismatch experiment and an on-screen/HiDPI GUI are
+The 100-seed IHP statistical experiment and an on-screen/HiDPI GUI are
 outside this automated corner check; the separate introductory Monte Carlo
 example is tested with both worker counts. TeX source generation is checked,
 not TeX compilation.

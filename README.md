@@ -28,7 +28,7 @@ project; run its commands from that directory.
 | [VACASK basics](vacask_basics/README.md) | 24 | Native OP, transient, AC and DC analyses; raw-vector measurements; ngspice comparison in one datasheet |
 | [SKY130A inverter](sky130a_inverter/README.md) | 27 + 6 | Foundry PVT transfer curves, logic levels, loaded transient timing |
 | [GF180MCU inverter](gf180_inverter/README.md) | 27 + 6 | 3.3 V foundry devices, model setup, geometry units and propagation delay |
-| [IHP source follower](source_follower/README.md) | 27 / 1000 | Foundry corners, device mismatch, schematic entry, per-testbench ngspice/VACASK selection |
+| [IHP source follower](source_follower/README.md) | 27 / 100 | Foundry corners, statistical variation, schematic entry, per-testbench ngspice/VACASK selection |
 
 The measurement limits in the introductory projects are teaching examples,
 not component guarantees. The Monte Carlo example intentionally has yield
@@ -132,8 +132,8 @@ VACASK suite uses `python scripts/verify_vacask.py`; add `--source-follower`
 only with Xschem and the IHP PDK configured. The foundry tests use
 `python scripts/verify_pdks.py`. All three scripts accept
 `--validate-only` to check definitions without launching simulators.
-These checks need no display or TeX installation. They do not run the legacy
-1000-seed IHP mismatch experiment.
+These checks need no display or TeX installation. They do not run the
+100-seed IHP statistical experiment.
 
 ## License
 

@@ -34,7 +34,7 @@ them if your PDK lives elsewhere.
 | [tb/tb_sf_tran.sch](tb/tb_sf_tran.sch) | Transient testbench for waveform experiments |
 | [tb/tb_sf_op_vacask.sch](tb/tb_sf_op_vacask.sch) | VACASK operating point |
 | [datasheets/corners_ngspice.yaml](datasheets/corners_ngspice.yaml) | 27 temperature/supply/process cases using ngspice |
-| [datasheets/mismatch_ngspice.yaml](datasheets/mismatch_ngspice.yaml) | 1000 mismatch seeds; a larger experiment |
+| [datasheets/mismatch_ngspice.yaml](datasheets/mismatch_ngspice.yaml) | 100 statistical (`tt_stat`) seeds; a larger experiment |
 | [datasheets/corners_vacask.yaml](datasheets/corners_vacask.yaml) | VACASK OP plus ngspice AC in the same datasheet |
 
 From this directory, start with:
@@ -47,7 +47,7 @@ chipify
 Choose `corners_ngspice.yaml` in the GUI. The included `settings.json`
 contains a saved Multi-Plot Dashboard configuration to explore after loading
 results. For a short mismatch experiment, copy its datasheet to a new name
-and reduce the seed range before running the full 1000 cases.
+and reduce the seed range before running all 100 cases.
 
 ## Adapting the existing datasheets
 
@@ -79,6 +79,6 @@ bash scripts/verify_in_container.sh --source-follower
 
 The checker copies this project to temporary storage and limits the copy to
 two workers. It leaves the shipped schematics, settings and datasheets intact.
-The 1000-seed mismatch experiment is outside this automated check because of
+The 100-seed statistical experiment is outside this automated check because of
 its run time. See the [container guide](../docs/vacask.md) for the tested image
 and tool versions.
