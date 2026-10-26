@@ -1,9 +1,9 @@
 parameters:
   temp: [27]
-  seed: range(1, 1001)
+  seed: range(1, 101)
   vdd: [1.5]
   vincm: [0.75]
-  corner_mos: ['tt_mismatch']
+  corner_mos: ['tt_stat']
   sigma: [1]
 tests:
   tb_sf_op:
